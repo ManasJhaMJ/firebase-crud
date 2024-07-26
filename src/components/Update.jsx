@@ -2,7 +2,7 @@ import app from '../firebase'
 import { getDatabase, ref, get } from 'firebase/database'
 import React, { useState, useEffect } from 'react'
 
-function Read() {
+function Update() {
 
     let [fruitsArray, setFruitsArray] = useState([])
 
@@ -12,7 +12,16 @@ function Read() {
             const dbRef = ref(db, 'nature/fruits')
             const snapshot = await get(dbRef)
             if (snapshot.exists()) {
-                setFruitsArray(Object.values(snapshot.val()))
+
+                const myData = snapshot.val();
+                const temp = Object.keys(myData).map((key) => {
+                    return {
+                        ...myData[key],
+                        Fruitid: key
+                    }
+                })
+
+                setFruitsArray(temp)
             }
             else {
                 alert('No data available')
@@ -32,7 +41,7 @@ function Read() {
             <div className='list'>
                 {fruitsArray.map((fruits, index) => {
                     return (
-                        <p key={index}>{index + 1}. {fruits.fruitName} - {fruits.fruitColor}</p>
+                        <p key={index}>{index + 1}. {fruits.fruitName} - {fruits.fruitColor} : {fruits.Fruitid}</p>
                     )
                 })}
             </div>
@@ -41,4 +50,4 @@ function Read() {
     )
 }
 
-export default Read
+export default Update
